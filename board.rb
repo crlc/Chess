@@ -7,14 +7,12 @@ require_relative 'pieces/pawn'
 
 class Board
 
-  LETTERS = ('a'..'h').to_a
-
   def self.nil_grid
     grid = Hash.new{ |h,k| h[k] = Hash.new{|h,k| h[k] = nil}}
 
-    ('a'..'h').each do |letter|
-      ('1'..'8').each do |num|
-        grid[letter][num]
+    (0..7).each do |file|
+      (0..7).each do |rank|
+        grid[file][rank]
       end
     end
 
@@ -23,53 +21,62 @@ class Board
 
   def initialize
     @pieces = []
-    # @grid = Hash.new{ |h,k| h[k] = Hash.new{|h,k| h[k] = nil}}
     @grid = Board.nil_grid
     self.setup
   end
 
   def [](pos)
-    letter, number = pos.split('')
-    @grid[letter][number]
+    file, rank = pos
+    @grid[file][rank]
   end
 
-  def backline(color, number)
+  def []=(pos, obj)
+    file, rank = pos
+    @grid[file][rank] = obj
+  end
+
+  def backline(color, rank)
     [
-      Rook.new(color, 'a' + number, self),
-      Knight.new(color, 'b' + number, self),
-      Bishop.new(color, 'c' + number, self),
-      Queen.new(color, 'd' + number, self),
-      King.new(color, 'e' + number, self),
-      Bishop.new(color, 'f' + number, self),
-      Knight.new(color, 'g' + number, self),
-      Rook.new(color, 'h' + number, self)
+      Rook.new(color, [0, rank], self),
+      Knight.new(color, [1, rank], self),
+      Bishop.new(color, [2, rank], self),
+      Queen.new(color, [3, rank], self),
+      King.new(color, [4, rank], self),
+      Bishop.new(color, [5, rank], self),
+      Knight.new(color, [6, rank], self),
+      Rook.new(color, [7, rank], self)
     ]
   end
 
   def display
+    system 'clear'
     puts "  _   _   _   _   _   _   _   _  "
-    ('1'..'8').to_a.reverse.each do |number|
-      ('a'..'h').each do |letter|
-        if @grid[letter][number].nil?
+    (0..7).to_a.reverse.each do |rank|
+      (0..7).each do |file|
+        pos = [file, rank]
+        if self[pos].nil?
           print "| _ "
         else
-          print "| #{@grid[letter][number].symbol} "
+          print "| #{self[pos].symbol} "
         end
       end
       puts "|"
     end
   end
 
+  def receive_move(pos_array)
+    old_pos, new_pos = pos_array
+    self[old_pos].move_to(new_pos)
+  end
+
   def setup
-    [[:white, '1'], [:black, '8']].each do |(color, number)|
+    [[:white, 0], [:black, 7]].each do |(color, number)|
       backline(color, number).each_with_index do |piece, i|
-        @grid[LETTERS[i]][number] = piece
-        ['2', '7'].each do |num|
-          @grid[LETTERS[i]][num] =
-                    Pawn.new(color, LETTERS[i] + num, self)
-        end
+        @grid[i][number] = piece
+
+        rank = (color == :white ? 1 : 6)
+        @grid[i][rank] = Pawn.new(color, [i, rank], self)
       end
     end
   end
-
 end

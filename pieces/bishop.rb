@@ -11,8 +11,8 @@ class Bishop < SlidingPiece
     end
   end
 
-  def moves
-
+  def move_dirs
+    
   end
 
 end
