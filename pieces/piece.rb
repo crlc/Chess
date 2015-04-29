@@ -31,17 +31,10 @@ class Piece
     raise RuntimeError.new("Define your moves")
   end
 
-  def valid_moves()
-    possibilities = self.moves
-    possibilities.select! do |pos|
-      (0..7).include?(pos.first) && (0..7).include?(pos.last)
-    end
+  def valid_moves
+    self.moves
 
-    possibilities.reject! do |pos|
-      @board[pos].nil? ? false : @board[pos].color == self.color
-    end
-
-    possibilities
+    # Eventually will have check checks, etc.
   end
 
 end

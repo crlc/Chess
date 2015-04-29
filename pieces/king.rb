@@ -29,6 +29,14 @@ class King < SteppingPiece
       options << [self.pos[0] + file, self.pos[1] + rank]
     end
 
+    options.select! do |pos|
+      (0..7).include?(pos.first) && (0..7).include?(pos.last)
+    end
+
+    options.reject! do |pos|
+      @board[pos].nil? ? false : @board[pos].color == self.color
+    end
+
     options
   end
 
