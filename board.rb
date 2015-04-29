@@ -35,14 +35,14 @@ class Board
 
   def backline(color, number)
     [
-      Rook.new(color, 'a' + number, self, 'R'),
-      Knight.new(color, 'b' + number, self, 'N'),
-      Bishop.new(color, 'c' + number, self, 'B'),
-      Queen.new(color, 'd' + number, self, 'Q'),
-      King.new(color, 'e' + number, self, 'K'),
-      Bishop.new(color, 'f' + number, self, 'B'),
-      Knight.new(color, 'g' + number, self, 'N'),
-      Rook.new(color, 'h' + number, self, 'R')
+      Rook.new(color, 'a' + number, self),
+      Knight.new(color, 'b' + number, self),
+      Bishop.new(color, 'c' + number, self),
+      Queen.new(color, 'd' + number, self),
+      King.new(color, 'e' + number, self),
+      Bishop.new(color, 'f' + number, self),
+      Knight.new(color, 'g' + number, self),
+      Rook.new(color, 'h' + number, self)
     ]
   end
 
@@ -53,7 +53,7 @@ class Board
         if @grid[letter][number].nil?
           print "| _ "
         else
-          print "| #{@grid[letter][number].display} "
+          print "| #{@grid[letter][number].symbol} "
         end
       end
       puts "|"
@@ -66,7 +66,7 @@ class Board
         @grid[LETTERS[i]][number] = piece
         ['2', '7'].each do |num|
           @grid[LETTERS[i]][num] =
-                    Pawn.new(color, LETTERS[i] + num, self, 'P')
+                    Pawn.new(color, LETTERS[i] + num, self)
         end
       end
     end
