@@ -11,9 +11,8 @@ class Queen < SlidingPiece
     end
   end
 
-  def moves
-
-
+  def directions
+    DIAGS + HORVER
   end
 
 end

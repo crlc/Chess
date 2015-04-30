@@ -11,8 +11,8 @@ class Rook < SlidingPiece
     end
   end
 
-  def moves
-
+  def directions
+    HORVER
   end
 
 end
