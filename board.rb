@@ -19,10 +19,9 @@ class Board
     grid
   end
 
-  def initialize
-    @pieces = []
+  def initialize(initial_board = nil)
     @grid = Board.nil_grid
-    self.setup
+    self.setup unless initial_board
   end
 
   def [](pos)
@@ -62,6 +61,42 @@ class Board
       end
       puts "|"
     end
+  end
+
+  def dup
+    new_board = Board.new(true)
+
+    @grid.each do |file, v|
+      v.each do |rank, piece|
+        if piece
+          piece = piece.dup(new_board)
+          new_board[file][rank] = piece
+        end
+      end
+    end
+    new_board
+  end
+
+  def in_check?(color)
+    other_color = (color == :white ? :black : :white)
+    king_pos = nil
+
+    @grid.each do |file, v|
+      v.each do |rank, piece|
+        king_pos = piece.pos if piece.is_a?(King) && piece.color == @color
+        break unless king_pos.nil?
+      end
+      break unless king_pos.nil?
+    end
+
+    @grid.each do |file, v|
+      v.each do |rank, piece|
+        next if piece.nil?
+        return true if piece.moves.include?(king_pos)
+      end
+    end
+
+    false
   end
 
   def receive_move(pos_array)

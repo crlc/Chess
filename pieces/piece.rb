@@ -10,8 +10,19 @@ class Piece
     @board = board
   end
 
+  def dup(board)
+    Piece.new(@color, @pos, board)
+  end
+
   def inspect
     "#{@color} #{@symbol} #{@pos}"
+  end
+
+  def move_into_check?(pos)
+    board_dup = @board.dup
+    board_dup.move_to![pos]
+    return true if board_dup.in_check?(@color)
+    false
   end
 
   def move_to(new_pos)
@@ -27,14 +38,24 @@ class Piece
     end
   end
 
+  def move_to!(new_pos)
+    @board[new_pos] = self
+    @board[@pos] = nil
+    @pos = new_pos
+  end
+
   def moves
     raise RuntimeError.new("Define your moves")
   end
 
   def valid_moves
-    self.moves
+    valids = []
 
-    # Eventually will have check checks, etc.
+    self.moves.each do |pos|
+      valids << pos unless move_into_check?(pos)
+    end
+
+    valids
   end
 
 end
